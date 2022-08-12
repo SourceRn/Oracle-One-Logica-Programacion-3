@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas width="600px" height="400px"></canvas>
+</body>
+<script>
+    let pantalla = document.querySelector("canvas");
+    let pincel = pantalla.getContext("2d");
+    pincel.fillStyle = "lightgrey";
+    pincel.fillRect(0, 0, 600, 400);
+    let colors = ["red", "white"];
+    let radio = 30;
+    let x_aleatorio;
+    let y_aleatorio;
+
+    function crearCircunferencia(x, y, radio, color) {
+        pincel.fillStyle = color;
+        pincel.beginPath();
+        pincel.arc(x, y, radio, 0, 2*Math.PI);
+        pincel.fill();
+    }
+
+    function limpiarPantalla() {
+        pincel.clearRect(0, 0, 600, 400);
+        pincel.fillStyle = "lightgrey";
+        pincel.fillRect(0, 0, 600, 400);
+    }
+
+    function actualizarPantalla() {
+        x_aleatorio = sortearPosicion(600);
+        y_aleatorio = sortearPosicion(400);
+        limpiarPantalla();
+        crearObjetivo(x_aleatorio, y_aleatorio);
+    }
+
+    function crearObjetivo(x, y) {
+        for (let i = 0; i < 3; i++) {
+            if(i > 1){
+                crearCircunferencia(x, y, radio, colors[i - 2]);
+            }
+            crearCircunferencia(x, y, radio, colors[i]);
+            radio -= 10;
+        }
+        radio = 30;
+    }
+
+    function sortearPosicion(maximo) {
+        return Math.floor(Math.random() * maximo);
+    }
+
+    function disparar(event){
+        let x = event.pageX - pantalla.offsetLeft;
+        let y = event.pageY - pantalla.offsetTop;
+
+        if ((x < x_aleatorio + radio) && 
+            (x > x_aleatorio - radio) &&
+            (y < y_aleatorio + radio) &&
+            (y > y_aleatorio - radio)) {
+                alert("Tiro Certero");
+        }
+
+
+    }
+
+    //setInterval(actualizarPantalla, 1000);
+    pantalla.onclick = disparar;
+    
+
+</script>
+</html>
